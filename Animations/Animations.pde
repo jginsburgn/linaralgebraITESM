@@ -1,9 +1,13 @@
 Trump trump;
-int counter;
+PImage background;
+final String BACKGROUND_SOURCE = "background_media/whitehouse.jpg";
+
+//int counter;
 
 void setup()
 {
-    counter = 0;
+    //counter = 0;
+    background = loadImage(BACKGROUND_SOURCE);
     trump = new Trump();
     size(800,600);
     clear();
@@ -22,10 +26,11 @@ void draw()
 }
 
 void clear() {
-    background(180);
+    image(background, -50, 0);
 }
 
 void keyPressed()
 {
-    if(key == 'a') trump.animateFace();
+    if(key == 'a') trump.animateFace(1);
+    if(key == 'b') trump.animateLeftArm(1);
 }

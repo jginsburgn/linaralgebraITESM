@@ -1,11 +1,12 @@
 //Important: perspectives (left vs. right) are respective to the user perception.
 
 class Trump {
-  
+    final int FPS = 60;
+
     //Face animation sequence:
     boolean isAnimatingFace = false;
-    int counter = 0;
-    float angle = 0;
+    int faceAnimationStep = 0;
+    int faceAnimationSequence = 0;
 
     //Face
     int faceX = 397;
@@ -18,6 +19,11 @@ class Trump {
     int torsoY = 248;
     final String TORSO_SOURCE = "trump_media/torso.png";
     final PImage torso = loadImage(TORSO_SOURCE);
+
+    //Left arm animation sequence:
+    boolean isAnimatingLeftArm = false;
+    int leftArmAnimationStep = 0;
+    int leftArmAnimationSequence = 0;
 
     //Left Arm
     int leftArmX = 310;
@@ -43,41 +49,51 @@ class Trump {
     final String RIGHTLEG_SOURCE = "trump_media/rightleg.png";
     final PImage rightLeg = loadImage(RIGHTLEG_SOURCE);
 
-    Trump () {
-    }
-
     void drawLeftLeg() {
-        image(leftLeg, leftLegX, leftLegY);
+        pushMatrix();
+        translate(leftLegX, leftLegY);
+        image(leftLeg, 0, 0);
+        popMatrix();
     }
 
     void drawRightLeg() {
-        image(rightLeg, rightLegX, rightLegY);
+        pushMatrix();
+        translate(rightLegX, rightLegY);
+        image(rightLeg, 0, 0);
+        popMatrix();
     }
 
     void drawLeftArm() {
-        image(leftArm, leftArmX, leftArmY);
+        pushMatrix();
+        translate(leftArmX, leftArmY);
+        if (isAnimatingLeftArm) {
+            stepLeftArmAnimation(); //<>//
+        }
+        image(leftArm, 0, 0);
+        popMatrix();
     }
 
     void drawRightArm() {
-        image(rightArm, rightArmX, rightArmY);
+        pushMatrix();
+        translate(rightArmX, rightArmY);
+        image(rightArm, 0, 0);
+        popMatrix();
     }
 
     void drawTorso() {
-        image(torso, torsoX, torsoY);
+        pushMatrix();
+        translate(torsoX, torsoY);
+        image(torso, 0, 0);
+        popMatrix();
     }
 
     void drawFace() {
         pushMatrix();
+        translate(faceX, faceY); //<>//
         if (isAnimatingFace) {
-          if (counter++ == 600) isAnimatingFace = false;
-          else {
-            angle = angle + 2*PI/600;
-            translate(faceX, faceY);
-            rotate(angle);
-            translate(-faceX, -faceY);
-          }
+            stepFaceAnimation(); //<>//
         }
-        image(face, faceX, faceY);
+        image(face, 0, 0);
         popMatrix();
     }
 
@@ -90,19 +106,60 @@ class Trump {
         drawRightArm();
         drawTorso();
         drawFace();
-        // image(face, faceX, faceY);
-        // pushMatrix();
-        // rotate(PI/4);
-        // image(torso, torsoX, torsoY);
-        // popMatrix();
-        // image(face, faceX +100, faceY + 100);
         imageMode(CORNER);
     }
-    
-    void animateFace() {
-      counter = 0;
-      angle = 0;
-      isAnimatingFace = true;
+
+    void stepFaceAnimation() {
+        if (faceAnimationSequence == 1) {
+            //animation number of steps //<>//
+            //first factor of the assigned multiplication
+            //the number of seconds for the duration
+            int animationTotalSteps = 5*FPS;
+            if (faceAnimationStep++ == animationTotalSteps) isAnimatingFace = false;
+            else {
+                float completionFraction = ((float)faceAnimationStep/(float)animationTotalSteps);
+                float angle = completionFraction * 2 * PI;
+                rotate(angle);
+            }
+        }
+        else if (faceAnimationSequence == 2) {
+
+        }
     }
 
+    void animateFace(int sequence) {
+        if (!isAnimatingFace) {
+            faceAnimationStep = 0;
+            faceAnimationSequence = sequence;
+            isAnimatingFace = true;
+        }
+    }
+
+    void stepLeftArmAnimation() {
+        if (leftArmAnimationSequence == 1) {
+            //animation number of steps //<>//
+            //first factor of the assigned multiplication
+            //the number of seconds for the duration
+            int animationTotalSteps = 5*FPS;
+            if (leftArmAnimationStep++ == animationTotalSteps) isAnimatingLeftArm = false;
+            else {
+                float completionFraction = ((float)leftArmAnimationStep/(float)animationTotalSteps);
+                float angle = completionFraction * 2 * PI;
+                translate(10, -100);
+                rotate(angle);
+                translate(-10, 100);
+            }
+        }
+        else if (leftArmAnimationSequence == 2) {
+
+        }
+    }
+
+    void animateLeftArm(int sequence) {
+        if (!isAnimatingLeftArm) {
+            leftArmAnimationStep = 0;
+            leftArmAnimationSequence = sequence;
+            isAnimatingLeftArm = true;
+        }
+    }
 }
